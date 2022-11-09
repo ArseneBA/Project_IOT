@@ -1,3 +1,6 @@
+**Warning readme not up to date, corresponding to a previous project used in the IOT project**
+
+
 
 ## <b>SensorDemo_BLESensor-App Application Description</b>
 
