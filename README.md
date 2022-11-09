@@ -1,6 +1,6 @@
 
 ## <b>SensorDemo_BLESensor-App Application Description</b>
-  
+
 This application shows how to implement proprietary BLE profiles.
 The communication is done using a STM32 Nucleo board and a Smartphone with BTLE.
 
@@ -49,27 +49,27 @@ BLE, Peripheral, SPI, BlueNRG-M0, BlueNRG-MS
 ### <b>Directory contents</b>
 
  - app_bluenrg_ms.c       SensorDemo_BLESensor-App initialization and applicative code
- 
+
  - gatt_db.c              Functions for building GATT DB and handling GATT events
- 
+
  - hci_tl_interface.c     Interface to the BlueNRG HCI Transport Layer 
- 
+
  - main.c                 Main program body
   
  - sensor.c               Sensor init and state machine
- 
+
  - stm32**xx_hal_msp.c    Source code for MSP Initialization and de-Initialization
 
  - stm32**xx_it.c         Source code for interrupt Service Routines
 
  - stm32**xx_nucleo.c     Source file for the BSP Common driver 
-						
+	
  - stm32**xx_nucleo_bus.c Source file for the BSP BUS IO driver
- 
+
  - system_stm32**xx.c     CMSIS Cortex-Mx Device Peripheral Access Layer System Source File
 
  - target_platform.c      Get information on the target device memory
-  
+
 ### <b>Hardware and Software environment</b>
 
   - This example runs on STM32 Nucleo boards with X-NUCLEO-IDB05A2 STM32 expansion board
@@ -108,3 +108,6 @@ All rights reserved.
 This software is licensed under terms that can be found in the LICENSE file
 in the root directory of this software component.
 If no LICENSE file comes with this software, it is provided AS-IS.
+
+
+

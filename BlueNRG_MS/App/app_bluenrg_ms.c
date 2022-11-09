@@ -39,6 +39,7 @@
 /* USER CODE BEGIN Includes */
 #include "iks01a2_env_sensors.h"
 #include "iks01a2_motion_sensors.h"
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private defines -----------------------------------------------------------*/
@@ -76,7 +77,7 @@ static void Set_Random_Motion_Values(uint32_t cnt);
 static void Reset_Motion_Values(void);
 
 /* USER CODE BEGIN PFP */
-
+static _Bool  Collect_process_motion_data(void);
 /* USER CODE END PFP */
 
 #if PRINT_CSV_FORMAT
@@ -280,6 +281,10 @@ static void User_Process(void)
 #endif
     BSP_LED_Toggle(LED2);
 
+
+    // TODO : rm db connected = 1 (DEBUG)
+    connected = 1;
+
     if (connected)
     {
       /* Set a random seed */
@@ -292,14 +297,11 @@ static void User_Process(void)
       BlueMS_Environmental_Update((int32_t)(data_h *100), (int16_t)(data_t * 10));
 
 
-      /* Update emulated Acceleration, Gyroscope and Sensor Fusion data */
+      /* Collect motion value, process data send a 1 if motion is detected */
       //Set_Random_Motion_Values(counter);
-      IKS01A2_MOTION_SENSOR_GetAxes(1, MOTION_ACCELERO, &struct_data_acc);
-      x_y_z.AXIS_X = struct_data_acc.x;
-      x_y_z.AXIS_Y = struct_data_acc.y;
-      x_y_z.AXIS_Z = struct_data_acc.z;
-      Acc_Update(&x_y_z, &g_axes, &m_axes);
-      //Quat_Update(&q_axes);
+      Collect_process_motion_data();
+      //Acc_Update(&x_y_z, &g_axes, &m_axes);
+      Quat_Update(&q_axes);
 
       counter ++;
       if (counter == 40) {
@@ -315,6 +317,32 @@ static void User_Process(void)
     user_button_pressed = 0;
   }
 #endif
+}
+
+/**
+ * @brief  Collect data from motion sensor, check if the card has moved,
+ * return true if so false if not.
+ *
+ * @param  None
+ * @retval bool representing whether the card was moved or not
+ */
+
+_Bool  Collect_process_motion_data(void)
+{
+	IKS01A2_MOTION_SENSOR_Axes_t struct_data_acc;
+	static IKS01A2_MOTION_SENSOR_Axes_t old_data = {0, 0, 0};
+	_Bool ret_moved = false;
+
+    IKS01A2_MOTION_SENSOR_GetAxes(1, MOTION_ACCELERO, &struct_data_acc);
+
+    if (abs(struct_data_acc.x - old_data.x) > 50 || abs(struct_data_acc.y - old_data.y) > 50 || abs(struct_data_acc.z - old_data.z) > 50)
+    	ret_moved = true;
+
+    old_data.x = struct_data_acc.x;
+    old_data.y = struct_data_acc.y;
+    old_data.z = struct_data_acc.z;
+
+    return ret_moved;
 }
 
 /**
