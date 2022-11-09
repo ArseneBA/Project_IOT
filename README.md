@@ -1,6 +1,10 @@
 **Warning readme not up to date, corresponding to a previous project used in the IOT project**
 
+Créer et regarder la valeur de la variable static pour armer ou non les alarmes. (faire un static) Quand l'on rerentre dans la fonction on ne veut pas que la valeur soit écrasée.
 
+Ajouter sur la page web un bouton de réarmement.
+
+[] remettre la led (alarme) (la communication entre la page web et node se fait via le server (avec un service))
 
 ## <b>SensorDemo_BLESensor-App Application Description</b>
 

@@ -259,6 +259,7 @@ static void User_Process(void)
   static uint32_t counter = 0;
   IKS01A2_MOTION_SENSOR_Axes_t struct_data_acc;
   AxesRaw_t x_y_z;
+  _Bool moved;
 
   if (set_connectable)
   {
@@ -282,26 +283,27 @@ static void User_Process(void)
     BSP_LED_Toggle(LED2);
 
 
-    // TODO : rm db connected = 1 (DEBUG)
-    connected = 1;
+    // TODO : rm db connected = 1
+    //connected = 1;
 
     if (connected)
     {
       /* Set a random seed */
       srand(HAL_GetTick());
 
-      /* Update emulated Environmental data */
+      /* Update Environmental data */
       //Set_Random_Environmental_Values(&data_t, &data_p);
       IKS01A2_ENV_SENSOR_GetValue(0, ENV_TEMPERATURE, &data_t);
       IKS01A2_ENV_SENSOR_GetValue(0, ENV_HUMIDITY, &data_h);
-      BlueMS_Environmental_Update((int32_t)(data_h *100), (int16_t)(data_t * 10));
 
 
       /* Collect motion value, process data send a 1 if motion is detected */
       //Set_Random_Motion_Values(counter);
-      Collect_process_motion_data();
+      moved = Collect_process_motion_data();
       //Acc_Update(&x_y_z, &g_axes, &m_axes);
-      Quat_Update(&q_axes);
+      //Quat_Update(&q_axes);
+
+      BlueMS_Environmental_Update(moved, (int32_t)(data_h *100), (int16_t)(data_t * 10));
 
       counter ++;
       if (counter == 40) {

@@ -236,7 +236,7 @@ tBleStatus Quat_Update(AxesRaw_t *data)
 
 /*******************************************************************************
 * Function Name  : Read_Request_CB.
-* Description    : Update the sensor valuse.
+* Description    : Update the sensor values.
 * Input          : Handle of the characteristic to update.
 * Return         : None.
 *******************************************************************************/
@@ -253,7 +253,7 @@ void Read_Request_CB(uint16_t handle)
     float data_t, data_p;
     data_t = 27.0 + ((uint64_t)rand()*5)/RAND_MAX; //T sensor emulation
     data_p = 1000.0 + ((uint64_t)rand()*100)/RAND_MAX; //P sensor emulation
-    BlueMS_Environmental_Update((int32_t)(data_p *100), (int16_t)(data_t * 10));
+    BlueMS_Environmental_Update(0, (int32_t)(data_p *100), (int16_t)(data_t * 10));
   }
 
   if(connection_handle !=0)
@@ -266,15 +266,21 @@ void Read_Request_CB(uint16_t handle)
   }
 }
 
-tBleStatus BlueMS_Environmental_Update(int32_t press, int16_t temp)
+tBleStatus BlueMS_Environmental_Update(_Bool moved, int32_t press, int16_t temp)
 {
+  // TODO : rm db BLE_STATUS_SUCCESS
   tBleStatus ret;
   uint8_t buff[8];
-  HOST_TO_LE_16(buff, HAL_GetTick()>>3);
+  //HOST_TO_LE_16(buff, HAL_GetTick()>>3);  // Previous version, is this line useful ?
+
+  buff[0] = 0;
+  if (moved) buff[1] = 1;
+  else buff[1] = 0;
 
   HOST_TO_LE_32(buff+2,press);
   HOST_TO_LE_16(buff+6,temp);
 
+  // TODO : rm db send the message
   ret = aci_gatt_update_char_value(HWServW2STHandle, EnvironmentalCharHandle,
                                    0, 8, buff);
 
